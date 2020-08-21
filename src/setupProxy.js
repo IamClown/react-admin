@@ -1,0 +1,16 @@
+const { createProxyMiddleware } = require('http-proxy-middleware')
+
+module.exports = function (app) {
+  app.use(createProxyMiddleware("/devApi", {
+    target: 'http://www.web-jshtml.cn/api/react', // 配置你要请求的服务器地址
+    changeOrigin: true,
+    pathRewrite: {
+      "^/devApi" : ""
+    }
+  }))
+  // 可以进行多个配置
+  // app.use(proxy("", {
+  //   target: 'http://www.web-jshtml.cn/api/react', // 配置你要请求的服务器地址
+  //   changeOrigin: true
+  // }))
+}

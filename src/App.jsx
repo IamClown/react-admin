@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from 'react';
-import { Route } from 'react-router-dom';
+import React, {Component} from 'react';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 
 import Login from './views/Login/index'
 
@@ -11,9 +11,11 @@ class App extends Component {
 
   render() {
     return (
-      <Fragment>
-        <Route path='/' component={Login}/>
-      </Fragment>
+      <HashRouter>
+        <Switch>
+          <Route path='/' component={Login}/>
+        </Switch>
+      </HashRouter>
     )
   }
 }
