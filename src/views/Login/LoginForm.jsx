@@ -6,6 +6,7 @@ import {Form, Button, Input, Row, Col} from "antd";
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 
 import {validatePassword} from '../../utils/validate'
+import {test} from '../../api/account'
 
 class LoginForm extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class LoginForm extends Component {
 
   onFinish = (value) => {
     console.log(value, 'value')
+    test()
   }
   changeToRegister = () => {
     this.props.handleSwitch('register')
@@ -37,12 +39,25 @@ class LoginForm extends Component {
           initialValues={{remember: true}}
           onFinish={this.onFinish}
         >
-          <Form.Item name="username" rules={[{required: true, message: 'Please input your Username!'}]}>
+          <Form.Item name="Email" rules={[
+            {required: true, message: 'Please input your Email!'},
+            {type: "email", message: '邮箱格式不正确'}
+          ]}>
             <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"/>
           </Form.Item>
           <Form.Item name="password" rules={[
-            {required: true, message: 'Please input your Password!'},
-            {min: 6, max: 20, message: '密码长度不能小于6位不能高于20位'}
+            ({getFieldValue}) => ({
+              validator(rule, value) {
+                if (value.length < 6 || value.length > 20) {
+                  return Promise.reject('密码长度必须在6~20位之间')
+                }
+                if (value && validatePassword.test(getFieldValue('password'))) {
+                  return Promise.resolve()
+                } else {
+                  return Promise.reject('密码格式必须是数字+字母')
+                }
+              }
+            })
           ]}>
             <Input.Password prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Password"/>
           </Form.Item>
@@ -50,7 +65,9 @@ class LoginForm extends Component {
               <Input prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Confirm password"/>
             </Form.Item>*/}
           <Form.Item name="verificationCode"
-                     rules={[{required: true, message: 'Please input your verification code!'}]}>
+                     rules={[
+                       {required: true, message: 'Please input your verification code!'},
+                       {len: 6, message: '验证码必须是6位'}]}>
             <Row gutter={8}>
               <Col span='16'>
                 <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Verification code"/>
