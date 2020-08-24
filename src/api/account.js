@@ -1,7 +1,7 @@
 import service from "../utils/request";
-export const test = (data) => {
+export const getCode = (data) => {
   return service.request({
-    url: '/login',
+    url: '/getSms/',
     method: 'post',
     data
   })

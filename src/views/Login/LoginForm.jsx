@@ -1,17 +1,19 @@
 import React, {Component, Fragment} from "react";
 import PropTypes from 'prop-types'
 import './index.scss'
-
+// antd
 import {Form, Button, Input, Row, Col} from "antd";
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 
-import {validatePassword} from '../../utils/validate'
-import {test} from '../../api/account'
+import {validatePassword, validateEmail} from '../../utils/validate'
+import Code from "../../components/code";
 
 class LoginForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      username: ''
+    }
   }
 
   static props = {
@@ -20,13 +22,20 @@ class LoginForm extends Component {
 
   onFinish = (value) => {
     console.log(value, 'value')
-    test()
   }
   changeToRegister = () => {
     this.props.handleSwitch('register')
   }
+  handleChange = (e) => {
+    this.setState({
+      username: e.target.value
+    })
+  }
+
 
   render() {
+    const _this = this
+    const {code_btn_text, code_btn_loading, code_btn_disable} = this.state
     return (
       <Fragment>
         <h2>
@@ -40,10 +49,24 @@ class LoginForm extends Component {
           onFinish={this.onFinish}
         >
           <Form.Item name="Email" rules={[
-            {required: true, message: 'Please input your Email!'},
-            {type: "email", message: '邮箱格式不正确'}
-          ]}>
-            <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"/>
+            () => ({
+              validator(rule, value) {
+                if (value && validateEmail(value)) {
+                  _this.setState({
+                    code_btn_disable: false
+                  })
+                  return Promise.resolve()
+                }
+                _this.setState({
+                  code_btn_disable: true
+                })
+                return Promise.reject("邮箱格式不正确")
+              }
+            })
+          ]}
+          >
+            <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"
+                   onChange={this.handleChange}/>
           </Form.Item>
           <Form.Item name="password" rules={[
             ({getFieldValue}) => ({
@@ -51,7 +74,7 @@ class LoginForm extends Component {
                 if (value.length < 6 || value.length > 20) {
                   return Promise.reject('密码长度必须在6~20位之间')
                 }
-                if (value && validatePassword.test(getFieldValue('password'))) {
+                if (value && validatePassword(getFieldValue('password'))) {
                   return Promise.resolve()
                 } else {
                   return Promise.reject('密码格式必须是数字+字母')
@@ -61,21 +84,16 @@ class LoginForm extends Component {
           ]}>
             <Input.Password prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Password"/>
           </Form.Item>
-          {/*<Form.Item name="confirmPassword" rules={[{required: true, message: 'Please input your confirm password!'}]}>
-              <Input prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Confirm password"/>
-            </Form.Item>*/}
-          <Form.Item name="verificationCode"
-                     rules={[
-                       {required: true, message: 'Please input your verification code!'},
-                       {len: 6, message: '验证码必须是6位'}]}>
+          <Form.Item name="verificationCode" rules={[
+            {required: true, message: 'Please input your verification code!'},
+            {len: 6, message: '验证码必须是6位'}
+          ]}>
             <Row gutter={8}>
               <Col span='16'>
                 <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Verification code"/>
               </Col>
               <Col span='8'>
-                <Button type='danger' className="login-form-button" block>
-                  获取验证码
-                </Button>
+                <Code username={this.state.username}/>
               </Col>
             </Row>
           </Form.Item>
