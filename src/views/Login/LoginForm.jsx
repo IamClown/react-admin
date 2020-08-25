@@ -1,18 +1,30 @@
 import React, {Component, Fragment} from "react";
+// 引入白名单
+import {withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import './index.scss'
 // antd
-import {Form, Button, Input, Row, Col} from "antd";
+import {Form, Button, Input, Row, Col, message} from "antd";
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
 
+// 验证
 import {validatePassword, validateEmail} from '../../utils/validate'
+// 组件
 import Code from "../../components/code";
+// API
+import {DoLogin} from '../../api/account'
+// 加密
+import CryptoJs from 'crypto-js'
 
 class LoginForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: ''
+      username: '',
+      password: '',
+      code: '',
+      module: 'login',
+      loading: false
     }
   }
 
@@ -21,21 +33,51 @@ class LoginForm extends Component {
   }
 
   onFinish = (value) => {
-    console.log(value, 'value')
+    this.setState({
+      loading: true
+    })
+    const loginData = {
+      username: value.username,
+      code: value.code,
+      password: CryptoJs.MD5(this.state.password).toString(),
+    }
+    DoLogin(loginData).then(res => {
+      this.setState({
+        loading: false
+      })
+      if (!res.data.resCode) {
+        message.success(res.data.message)
+        this.props.history.push('/index')
+      } else {
+        message.warning(res.data.message)
+      }
+    }).catch((error) => {
+      this.setState({
+        loading: false
+      })
+      message.error(error)
+    })
   }
   changeToRegister = () => {
     this.props.handleSwitch('register')
   }
-  handleChange = (e) => {
+  inputChange = (e) => {
     this.setState({
       username: e.target.value
     })
   }
-
+  inputChangeCode = (e) => {
+    this.setState({
+      code: e.target.value
+    })
+  }
+  inputChangePassword = (e) => {
+    this.setState({
+      password: e.target.value
+    })
+  }
 
   render() {
-    const _this = this
-    const {code_btn_text, code_btn_loading, code_btn_disable} = this.state
     return (
       <Fragment>
         <h2>
@@ -48,57 +90,55 @@ class LoginForm extends Component {
           initialValues={{remember: true}}
           onFinish={this.onFinish}
         >
-          <Form.Item name="Email" rules={[
+          <Form.Item name="username" rules={[
             () => ({
               validator(rule, value) {
                 if (value && validateEmail(value)) {
-                  _this.setState({
-                    code_btn_disable: false
-                  })
                   return Promise.resolve()
                 }
-                _this.setState({
-                  code_btn_disable: true
-                })
                 return Promise.reject("邮箱格式不正确")
               }
             })
           ]}
           >
             <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Username"
-                   onChange={this.handleChange}/>
+                   onChange={this.inputChange}/>
           </Form.Item>
           <Form.Item name="password" rules={[
-            ({getFieldValue}) => ({
+            () => ({
               validator(rule, value) {
-                if (value.length < 6 || value.length > 20) {
-                  return Promise.reject('密码长度必须在6~20位之间')
-                }
-                if (value && validatePassword(getFieldValue('password'))) {
+                if (value) {
+                  if (value.length < 6 || value.length > 20) {
+                    return Promise.reject('密码长度必须在6~20位之间')
+                  }
+                  if (!validatePassword(value)) {
+                    return Promise.reject('密码格式必须是数字+字母')
+                  }
                   return Promise.resolve()
-                } else {
-                  return Promise.reject('密码格式必须是数字+字母')
                 }
+                return Promise.reject("密码不能为空")
               }
             })
           ]}>
-            <Input.Password prefix={<LockOutlined className="site-form-item-icon"/>} placeholder="Password"/>
+            <Input.Password prefix={<LockOutlined className="site-form-item-icon"/>}
+                            onChange={this.inputChangePassword} placeholder="Password"/>
           </Form.Item>
-          <Form.Item name="verificationCode" rules={[
-            {required: true, message: 'Please input your verification code!'},
+          <Form.Item name="code" rules={[
+            {required: true, message: '验证码不能为空'},
             {len: 6, message: '验证码必须是6位'}
           ]}>
             <Row gutter={8}>
               <Col span='16'>
-                <Input prefix={<UserOutlined className="site-form-item-icon"/>} placeholder="Verification code"/>
+                <Input prefix={<UserOutlined className="site-form-item-icon"/>}
+                       placeholder="Verification code" onChange={this.inputChangeCode}/>
               </Col>
               <Col span='8'>
-                <Code username={this.state.username}/>
+                <Code username={this.state.username} module={this.state.module}/>
               </Col>
             </Row>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button" block>
+            <Button type="primary" htmlType="submit" loading={this.state.loading} className="login-form-button" block>
               登录
             </Button>
           </Form.Item>
@@ -108,4 +148,4 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm
+export default withRouter(LoginForm)

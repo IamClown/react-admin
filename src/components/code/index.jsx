@@ -1,10 +1,12 @@
 import React, {Component} from 'react'
 // antd
-import {Button} from "antd";
+import {Button, message} from "antd";
 // api
 import {getCode} from "../../api/account";
 
 import {validateEmail} from '../../utils/validate'
+
+let timer = null;
 
 class Code extends Component {
   constructor(props) {
@@ -13,22 +15,36 @@ class Code extends Component {
       username: '',
       code_btn_loading: false,
       code_btn_disable: true,
-      code_btn_text: '获取验证码'
+      code_btn_text: '获取验证码',
+      module: ''
     }
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
-  }
-
+  /*
+  * 获取父组件的state，提代componentWillReceiveProps
+  */
   static getDerivedStateFromProps(prop, state) {
-    if(validateEmail(prop.username)) {
+    /*
+    *  如果当前的属性和状态一样，不触发render
+    */
+    if (prop.username === state.username) {
+      return null
+    }
+    if (validateEmail(prop.username)) {
       return {
         ...state,
         code_btn_disable: false,
-        username: prop.username
+        username: prop.username,
+        module: prop.module
+      }
+    } else {
+      return {
+        ...state,
+        code_btn_disable: true,
+        username: prop.username,
+        module: prop.module
       }
     }
-    return null
   }
 
   handleGetCode = () => {
@@ -37,25 +53,31 @@ class Code extends Component {
       code_btn_text: '发送中',
       code_btn_disable: true
     })
-    console.log(this.state.code_btn_disable, 'code_btn_disable')
     const data = {
       username: this.state.username,
-      module: 'login'
+      module: this.state.module
     }
     getCode(data).then(res => {
-      console.log(res);
+      if(!res.data.resCode) {
+        message.success(res.data.message)
+      }
       this.countDown()
     }).catch(error => {
       this.setState({
         code_btn_loading: false,
         code_btn_text: '重新获取'
       })
+      message.error(error)
     })
   }
+
+  componentWillUnmount() {
+    clearInterval(timer)
+  }
+
   // 倒计时
   countDown = () => {
-    let second = 60,
-      timer = null
+    let second = 60;
     timer = setInterval(() => {
       second--;
       if (second <= 0) {

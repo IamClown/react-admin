@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 
 import Login from './views/Login/index'
+import Index from "./views/Index";
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class App extends Component {
     return (
       <HashRouter>
         <Switch>
-          <Route path='/' component={Login}/>
+          <Route exact path='/' component={Login}/>
+          <Route path='/index' component={Index}/>
         </Switch>
       </HashRouter>
     )
