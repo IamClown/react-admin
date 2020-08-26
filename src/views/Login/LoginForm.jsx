@@ -15,6 +15,8 @@ import Code from "../../components/code";
 import {DoLogin} from '../../api/account'
 // 加密
 import CryptoJs from 'crypto-js'
+// session
+import {setToken} from "../../utils/session";
 
 class LoginForm extends Component {
   constructor(props) {
@@ -47,6 +49,7 @@ class LoginForm extends Component {
       })
       if (!res.data.resCode) {
         message.success(res.data.message)
+        setToken(res.data.data.token)
         this.props.history.push('/index')
       } else {
         message.warning(res.data.message)

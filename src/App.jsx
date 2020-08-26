@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
-
+// 组件
 import Login from './views/Login/index'
 import Index from "./views/Index";
+
+// 私有化路由
+import PrivateRouter from "./views/Index/privateRouter";
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +18,7 @@ class App extends Component {
       <HashRouter>
         <Switch>
           <Route exact path='/' component={Login}/>
-          <Route path='/index' component={Index}/>
+          <PrivateRouter path='/index' component={Index}/>
         </Switch>
       </HashRouter>
     )
