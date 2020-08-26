@@ -5,7 +5,7 @@
   height: 75px;
   background: #001529;
   position: relative;
-
+  @include webkit(transition, all 0.2s ease);
   span {
     display: block;
     width: 177px;
@@ -15,10 +15,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #1a2d3f;
+    @include webkit(transition, all 0.2s ease);
   }
 }
 
 .collapsed-close {
+  @include webkit(transition, all 0.2s ease);
+
   .logo {
     width: 80px;
 
@@ -33,6 +36,7 @@
 }
 
 .collapsed-warp {
+  @include webkit(transition, all 0.2s);
   margin-left: 220px;
 
   .collapsed-icon {

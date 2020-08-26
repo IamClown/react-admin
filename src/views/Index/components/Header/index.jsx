@@ -14,10 +14,19 @@ class Header extends Component {
     this.props.toggleCollapsed()
   }
 
+  static getDerivedStateFromProps(props, state) {
+    console.log(1, '1')
+    if (props.collapsed !== state.collapsed) {
+      console.log(2);
+      return {collapsed: props.collapsed}
+    }
+    return null
+  }
+
   render() {
     const {collapsed} = this.state
     return (
-      <div className={collapsed ? 'collapsed-close' : ''}>
+      <div className={collapsed ? 'collapsed-close' : 'collapsed-open'}>
         <h1 className='logo'>
           <span>LOGO</span>
         </h1>
