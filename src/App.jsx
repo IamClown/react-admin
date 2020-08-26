@@ -5,7 +5,7 @@ import Login from './views/Login/index'
 import Index from "./views/Index";
 
 // 私有化路由
-import PrivateRouter from "./views/Index/privateRouter";
+import PrivateRouter from "./components/privateRouter";
 
 class App extends Component {
   constructor(props) {

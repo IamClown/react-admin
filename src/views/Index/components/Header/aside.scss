@@ -1,16 +1,42 @@
 .logo {
+  float: left;
   width: 250px;
   margin-left: -50px;
-  display: flex;
   height: 75px;
-  align-items: center;
-  justify-content: center;
   background: #001529;
+  position: relative;
 
   span {
     display: block;
     width: 177px;
     height: 47px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #1a2d3f;
+  }
+}
+
+.collapsed-close {
+  .logo {
+    width: 80px;
+
+    span {
+      width: 100%;
+    }
+  }
+
+  .collapsed-warp {
+    margin-left: 65px;
+  }
+}
+
+.collapsed-warp {
+  margin-left: 220px;
+
+  .collapsed-icon {
+    font-size: 20px;
+    cursor: pointer;
   }
 }
