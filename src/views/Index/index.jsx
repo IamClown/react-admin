@@ -21,7 +21,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    const collapsed = sessionStorage.getItem('collapsed')
+    const collapsed = !JSON.parse(sessionStorage.getItem('collapsed'))
     this.setState({
       collapsed
     })

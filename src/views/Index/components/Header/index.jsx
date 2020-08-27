@@ -6,7 +6,7 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapsed: props.collapsed
+      // collapsed: props.collapsed
     }
   }
 
@@ -15,9 +15,7 @@ class Header extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    console.log(1, '1')
     if (props.collapsed !== state.collapsed) {
-      console.log(2);
       return {collapsed: props.collapsed}
     }
     return null
