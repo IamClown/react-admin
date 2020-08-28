@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 // 组件
-import Login from './views/Login/index'
-import Index from "./views/Index";
+import Login from './views/login/index'
+import Index from "./views/index/index.jsx";
 
 // 私有化路由
 import PrivateRouter from "./components/privateRouter";
