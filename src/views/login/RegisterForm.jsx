@@ -45,17 +45,16 @@ class RegisterForm extends Component {
       this.setState({
         loading: false
       })
-      if (!res.data.resCode) {
-        message.success(res.data.message)
+      if (!res.resCode) {
+        message.success(res.message)
         this.changeToLogin()
       } else {
-        message.warning(res.data.message)
+        message.warning(res.message)
       }
-    }).catch((error) => {
+    }).catch(() => {
       this.setState({
         loading: false
       })
-      message.error(error)
     })
   }
   changeToLogin = () => {

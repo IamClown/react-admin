@@ -16,7 +16,7 @@ import {DoLogin} from '../../api/account'
 // 加密
 import CryptoJs from 'crypto-js'
 // session
-import {setToken} from "../../utils/session";
+import {setToken, setUsername} from "../../utils/cookies";
 
 class LoginForm extends Component {
   constructor(props) {
@@ -47,18 +47,16 @@ class LoginForm extends Component {
       this.setState({
         loading: false
       })
-      if (!res.data.resCode) {
-        message.success(res.data.message)
-        setToken(res.data.data.token)
+      if (!res.resCode) {
+        message.success(res.message)
+        setToken(res.data.token)
+        setUsername(res.data.username)
         this.props.history.push('/index')
-      } else {
-        message.warning(res.data.message)
       }
-    }).catch((error) => {
+    }).catch(() => {
       this.setState({
         loading: false
       })
-      message.error(error)
     })
   }
   changeToRegister = () => {

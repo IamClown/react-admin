@@ -58,8 +58,8 @@ class Code extends Component {
       module: this.state.module
     }
     getCode(data).then(res => {
-      if(!res.data.resCode) {
-        message.success(res.data.message)
+      if(!res.resCode) {
+        message.success(res.message)
       }
       this.countDown()
     }).catch(error => {
