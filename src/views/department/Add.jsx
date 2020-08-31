@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react'
 // antd
 import {Form, Input, Button, InputNumber, Radio, message} from 'antd'
 // api
-import {addDeparment} from '../../api/department'
+import {addDepartment} from '../../api/department'
 
 class DepartmentAdd extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class DepartmentAdd extends Component {
     this.setState({
       loading: true
     })
-    addDeparment(value).then(res => {
+    addDepartment(value).then(res => {
       this.setState({
         loading: false
       })
