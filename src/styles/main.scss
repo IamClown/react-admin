@@ -3,3 +3,8 @@
 body {
   background-color: #001529;
 }
+.inline-btn {
+  button + button {
+    margin-left: 10px;
+  }
+}

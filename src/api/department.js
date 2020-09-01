@@ -8,3 +8,12 @@ export const addDepartment = (data) => {
     data
   })
 }
+
+// 获取部门列表
+export const getDepartmentList = (data) => {
+  return request.request({
+    url: '/department/list/',
+    method: 'post',
+    data
+  })
+}
