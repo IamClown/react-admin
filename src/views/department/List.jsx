@@ -35,7 +35,8 @@ class DepartmentList extends Component {
         pageNumber: 1,
         pageSize: 10
       },
-      keyWord: ''
+      keyWord: '',
+      selectedRowKeys: []
     }
   }
 
@@ -69,9 +70,18 @@ class DepartmentList extends Component {
   onChange = (page) => {
 
   }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({
+      selectedRowKeys
+    })
+  }
 
   render() {
-    const {dataSource, columns, total} = this.state
+    const {dataSource, columns, total, selectedRowKeys} = this.state
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    }
     const pagination = {
       total,
       pageSize: 10,
@@ -96,6 +106,7 @@ class DepartmentList extends Component {
           dataSource={dataSource}
           columns={columns}
           pagination={{...pagination}}
+          rowSelection={rowSelection}
         />
       </Fragment>
     );
