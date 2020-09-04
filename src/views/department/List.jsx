@@ -1,9 +1,10 @@
 import React, {Component, Fragment} from 'react'
 
 // antd
-import {Form, Input, Button, Table, Switch} from 'antd'
-// api
-import {getDepartmentList} from '@/api/department'
+import {Button, Switch} from 'antd'
+
+// component
+import TableComponent from '@/components/tableData'
 
 class DepartmentList extends Component {
   constructor(props) {
@@ -30,66 +31,20 @@ class DepartmentList extends Component {
             )
           }
         }
-      ],
-      requestData: {
-        pageNumber: 1,
-        pageSize: 10
-      },
-      keyWord: '',
-      selectedRowKeys: []
+      ]
     }
-  }
-
-  onFinish = (value) => {
-    if (value.name) {
-      this.setState({
-        keyWord: value.name
-      })
-    }
-    this.getList()
-  }
-
-  componentDidMount() {
-    this.getList()
-  }
-
-  getList = () => {
-    const {requestData, keyWord} = this.state
-    if (keyWord) {
-      requestData.name = keyWord
-    }
-    getDepartmentList(requestData).then(res => {
-      if (res.data.data) {
-        this.setState({
-          dataSource: res.data.data,
-          total: res.data.total
-        })
-      }
-    })
-  }
-  onChange = (page) => {
-
-  }
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({
-      selectedRowKeys
-    })
   }
 
   render() {
-    const {dataSource, columns, total, selectedRowKeys} = this.state
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    }
-    const pagination = {
-      total,
-      pageSize: 10,
-      onChange: this.onChange
+    const {columns} = this.state
+    const config = {
+      columns,
+      method: 'post',
+      url: 'departmentList'
     }
     return (
       <Fragment>
-        <Form layout='inline' onFinish={this.onFinish}>
+        {/*<Form layout='inline' onFinish={this.onFinish}>
           <Form.Item
             label='部门名称'
             name='name'
@@ -99,15 +54,8 @@ class DepartmentList extends Component {
           <Form.Item shouldUpdate={true}>
             <Button type='primary' htmlType='submit'>搜索</Button>
           </Form.Item>
-        </Form>
-        <Table
-          rowKey='id'
-          border
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{...pagination}}
-          rowSelection={rowSelection}
-        />
+        </Form>*/}
+        <TableComponent config={config} rowKey='id'/>
       </Fragment>
     );
   }
