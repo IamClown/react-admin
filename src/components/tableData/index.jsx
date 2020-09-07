@@ -60,7 +60,7 @@ class TableComponent extends Component {
   }
 
   render() {
-    const {selectedRowKeys, total, pageSize} = this.state
+    const {selectedRowKeys, total, pageSize, pageNumber} = this.state
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -75,7 +75,7 @@ class TableComponent extends Component {
           pagination={false}
           rowSelection={rowSelection}
         />
-        <Pagination defaultCurrent={1} total={total} pageSize={pageSize} onChange={this.handlePageChange}/>
+        <Pagination current={pageNumber} total={total} pageSize={pageSize} onChange={this.handlePageChange}/>
       </Fragment>
     );
   }
